@@ -351,6 +351,10 @@
       <HintPath>Assets\Packages\R3.1.3.0\lib\netstandard2.1\R3.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.Collections.LowLevel.ILSupport">
+      <HintPath>Library\PackageCache\com.unity.collections@1.2.4\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
       <HintPath>Assets\Packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
       <Private>False</Private>
@@ -373,6 +377,14 @@
     </Reference>
     <Reference Include="System.Threading.Channels">
       <HintPath>Assets\Packages\System.Threading.Channels.8.0.0\lib\netstandard2.1\System.Threading.Channels.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ObservableCollections">
+      <HintPath>Assets\Packages\ObservableCollections.3.3.4\lib\netstandard2.1\ObservableCollections.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ObservableCollections.R3">
+      <HintPath>Assets\Packages\ObservableCollections.R3.3.3.4\lib\netstandard2.1\ObservableCollections.R3.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
@@ -869,9 +881,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Unity.Timeline.Player.csproj">
-      <Project>{EA07961B-E4C4-368B-AE3D-AFCD90F2E7E1}</Project>
-      <Name>Unity.Timeline.Player</Name>
+    <ProjectReference Include="Unity.Burst.Player.csproj">
+      <Project>{11C8C7B4-9B99-0086-B754-12CCC8AA1AD4}</Project>
+      <Name>Unity.Burst.Player</Name>
     </ProjectReference>
     <ProjectReference Include="UniTask.TextMeshPro.Player.csproj">
       <Project>{1FA7557A-64F9-3F66-4785-146AEA43D97E}</Project>
@@ -889,6 +901,38 @@
       <Project>{F5735D3C-5CA6-77CB-F237-E1D7D5441369}</Project>
       <Name>UniTask.Addressables.Player</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.Networking.Transport.Player.csproj">
+      <Project>{0B64176A-DFC3-E288-6989-5AB03D0338DD}</Project>
+      <Name>Unity.Networking.Transport.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="UniTask.Linq.Player.csproj">
+      <Project>{C2455AAC-6924-F9D2-45C7-ACD181B2A4FF}</Project>
+      <Name>UniTask.Linq.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.UI.Player.csproj">
+      <Project>{FEE0F527-4745-4E25-5DAF-EEA5EC36AC3F}</Project>
+      <Name>UnityEngine.UI.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Netcode.Components.Player.csproj">
+      <Project>{52A2DCD7-B430-0191-6DB2-4E2865BD6B1B}</Project>
+      <Name>Unity.Netcode.Components.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Timeline.Player.csproj">
+      <Project>{EA07961B-E4C4-368B-AE3D-AFCD90F2E7E1}</Project>
+      <Name>Unity.Timeline.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Collections.Player.csproj">
+      <Project>{658F8C0C-14BB-E29A-04B1-3E026BBA266E}</Project>
+      <Name>Unity.Collections.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Netcode.Runtime.Player.csproj">
+      <Project>{F89D6E0C-1B7C-2846-D0A6-01ABB12CCE66}</Project>
+      <Name>Unity.Netcode.Runtime.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Mathematics.Player.csproj">
+      <Project>{889F533E-B6E7-C12F-FF9E-8F8E0E847D45}</Project>
+      <Name>Unity.Mathematics.Player</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.TextMeshPro.Player.csproj">
       <Project>{7595D449-8048-220B-528D-E60AE209BC09}</Project>
       <Name>Unity.TextMeshPro.Player</Name>
@@ -896,14 +940,6 @@
     <ProjectReference Include="UniTask.Player.csproj">
       <Project>{ACEC1EAF-151F-5BDB-8AF0-15751C800FD0}</Project>
       <Name>UniTask.Player</Name>
-    </ProjectReference>
-    <ProjectReference Include="UnityEngine.UI.Player.csproj">
-      <Project>{FEE0F527-4745-4E25-5DAF-EEA5EC36AC3F}</Project>
-      <Name>UnityEngine.UI.Player</Name>
-    </ProjectReference>
-    <ProjectReference Include="UniTask.Linq.Player.csproj">
-      <Project>{C2455AAC-6924-F9D2-45C7-ACD181B2A4FF}</Project>
-      <Name>UniTask.Linq.Player</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

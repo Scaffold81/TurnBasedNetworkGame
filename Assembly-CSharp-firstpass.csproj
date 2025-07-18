@@ -415,6 +415,10 @@
       <HintPath>Assets\Packages\R3.1.3.0\lib\netstandard2.1\R3.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.Collections.LowLevel.ILSupport">
+      <HintPath>Library\PackageCache\com.unity.collections@1.2.4\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ReportGeneratorMerged">
       <HintPath>Library\PackageCache\com.unity.testtools.codecoverage@1.2.6\lib\ReportGenerator\ReportGeneratorMerged.dll</HintPath>
       <Private>False</Private>
@@ -441,6 +445,18 @@
     </Reference>
     <Reference Include="System.Threading.Channels">
       <HintPath>Assets\Packages\System.Threading.Channels.8.0.0\lib\netstandard2.1\System.Threading.Channels.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ObservableCollections">
+      <HintPath>Assets\Packages\ObservableCollections.3.3.4\lib\netstandard2.1\ObservableCollections.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ObservableCollections.R3">
+      <HintPath>Assets\Packages\ObservableCollections.R3.3.3.4\lib\netstandard2.1\ObservableCollections.R3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>Library\PackageCache\com.unity.nuget.mono-cecil@1.11.4\Mono.Cecil.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
@@ -957,33 +973,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Unity.Timeline.csproj">
-      <Project>{494427B6-4A9B-6551-CC25-C4F38B76FDA5}</Project>
-      <Name>Unity.Timeline</Name>
-    </ProjectReference>
     <ProjectReference Include="NuGetForUnity.csproj">
       <Project>{8E9E89EA-8E78-5DA6-48C7-64A280DCEEFD}</Project>
       <Name>NuGetForUnity</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection.csproj">
-      <Project>{AA5D0D48-C5F2-323A-F6B9-256D051D9C1A}</Project>
-      <Name>Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.EditorCoroutines.Editor.csproj">
       <Project>{94503250-18D0-378D-C212-0ECF290D27F0}</Project>
       <Name>Unity.EditorCoroutines.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.Performance.Profile-Analyzer.Editor.csproj">
-      <Project>{CF7949C6-9F82-4C75-3E45-AE00BACF19D4}</Project>
-      <Name>Unity.Performance.Profile-Analyzer.Editor</Name>
+    <ProjectReference Include="Unity.Burst.Editor.csproj">
+      <Project>{B41E487C-C396-2FAA-6619-0FB24BA92C62}</Project>
+      <Name>Unity.Burst.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.TestTools.CodeCoverage.Editor.csproj">
-      <Project>{B1284CCE-F254-F146-4BAE-D07D46E3F71E}</Project>
-      <Name>Unity.TestTools.CodeCoverage.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.TestTools.CodeCoverage.Editor.OpenCover.Model.csproj">
-      <Project>{50F9FBD5-2CC8-6AD1-3E08-A8FB27CA1149}</Project>
-      <Name>Unity.TestTools.CodeCoverage.Editor.OpenCover.Model</Name>
+    <ProjectReference Include="Unity.Burst.csproj">
+      <Project>{17B93933-F515-C64D-9E9B-0CBC15299DE8}</Project>
+      <Name>Unity.Burst</Name>
     </ProjectReference>
     <ProjectReference Include="UniTask.TextMeshPro.csproj">
       <Project>{44376A84-FA73-E513-C915-B92D36CC5E41}</Project>
@@ -1013,37 +1017,93 @@
       <Project>{935D0F36-F4FF-8A1A-B51C-42BDB42B1257}</Project>
       <Name>Unity.VisualStudio.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.TextMeshPro.csproj">
-      <Project>{DF51C722-FD8F-C8ED-AA65-D07D7AB3BFDA}</Project>
-      <Name>Unity.TextMeshPro</Name>
-    </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{89156368-E4F5-2851-D461-9684BEB3CC39}</Project>
       <Name>UnityEditor.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.TextMeshPro.Editor.csproj">
-      <Project>{C49EA05C-F1CC-0344-D337-6F83B16C6643}</Project>
-      <Name>Unity.TextMeshPro.Editor</Name>
+    <ProjectReference Include="Unity.Networking.Transport.csproj">
+      <Project>{0981480D-DE9A-CEEB-87CA-9B24654FB8FF}</Project>
+      <Name>Unity.Networking.Transport</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Rider.Editor.csproj">
       <Project>{F4DBF640-3D35-C05B-2A61-A241401068A4}</Project>
       <Name>Unity.Rider.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="UniTask.csproj">
-      <Project>{5B383162-662D-6B2E-9F81-8B536B0A47D1}</Project>
-      <Name>UniTask</Name>
+    <ProjectReference Include="UniTask.Linq.csproj">
+      <Project>{B8F635F0-04F2-DDB1-A8B4-CBBA07A54D8E}</Project>
+      <Name>UniTask.Linq</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.csproj">
       <Project>{62E5270C-7741-9403-AAAF-9B4527EAF20C}</Project>
       <Name>UnityEngine.UI</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.Netcode.Components.csproj">
+      <Project>{C8134AC1-A5E2-8B1B-7409-433FE69F158D}</Project>
+      <Name>Unity.Netcode.Components</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Mathematics.Editor.csproj">
+      <Project>{961DBF88-923D-998B-96C9-A5CB2A6B8745}</Project>
+      <Name>Unity.Mathematics.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Timeline.csproj">
+      <Project>{494427B6-4A9B-6551-CC25-C4F38B76FDA5}</Project>
+      <Name>Unity.Timeline</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Netcode.Editor.csproj">
+      <Project>{D5327638-A5B9-43FB-0527-C0C2C4DBB319}</Project>
+      <Name>Unity.Netcode.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection.csproj">
+      <Project>{AA5D0D48-C5F2-323A-F6B9-256D051D9C1A}</Project>
+      <Name>Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Performance.Profile-Analyzer.Editor.csproj">
+      <Project>{CF7949C6-9F82-4C75-3E45-AE00BACF19D4}</Project>
+      <Name>Unity.Performance.Profile-Analyzer.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.TestTools.CodeCoverage.Editor.csproj">
+      <Project>{B1284CCE-F254-F146-4BAE-D07D46E3F71E}</Project>
+      <Name>Unity.TestTools.CodeCoverage.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.TestTools.CodeCoverage.Editor.OpenCover.Model.csproj">
+      <Project>{50F9FBD5-2CC8-6AD1-3E08-A8FB27CA1149}</Project>
+      <Name>Unity.TestTools.CodeCoverage.Editor.OpenCover.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Collections.csproj">
+      <Project>{458557F1-40AD-0B02-8984-CF9D86AEB704}</Project>
+      <Name>Unity.Collections</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Netcode.Runtime.csproj">
+      <Project>{D890E53F-F23B-4463-CD2D-130B79FE84BC}</Project>
+      <Name>Unity.Netcode.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Netcode.Editor.PackageChecker.csproj">
+      <Project>{C8674022-83C3-B742-50C2-15C2657B5C9B}</Project>
+      <Name>Unity.Netcode.Editor.PackageChecker</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Mathematics.csproj">
+      <Project>{0DF429D0-92F1-C752-A841-7C72D5144A7D}</Project>
+      <Name>Unity.Mathematics</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.TextMeshPro.csproj">
+      <Project>{DF51C722-FD8F-C8ED-AA65-D07D7AB3BFDA}</Project>
+      <Name>Unity.TextMeshPro</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Networking.Editor.csproj">
+      <Project>{418D1D8C-E0B4-98A5-ECDC-C9FCE2BCAD9A}</Project>
+      <Name>Unity.Networking.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.TextMeshPro.Editor.csproj">
+      <Project>{C49EA05C-F1CC-0344-D337-6F83B16C6643}</Project>
+      <Name>Unity.TextMeshPro.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="UniTask.csproj">
+      <Project>{5B383162-662D-6B2E-9F81-8B536B0A47D1}</Project>
+      <Name>UniTask</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.VSCode.Editor.csproj">
       <Project>{E1B478E0-AC96-0BA5-D449-40925213FBB9}</Project>
       <Name>Unity.VSCode.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="UniTask.Linq.csproj">
-      <Project>{B8F635F0-04F2-DDB1-A8B4-CBBA07A54D8E}</Project>
-      <Name>UniTask.Linq</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

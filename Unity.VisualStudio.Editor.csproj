@@ -87,8 +87,8 @@
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\FileUtility.cs" />
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\SimpleJSON.cs" />
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\ProjectGeneration\GUIDProvider.cs" />
-    <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\VersionPair.cs" />
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\UsageUtility.cs" />
+    <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\VersionPair.cs" />
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\Messaging\Serializer.cs" />
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\Messaging\TcpClient.cs" />
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\Messaging\Messenger.cs" />
@@ -1001,13 +1001,13 @@
       <Project>{62E5270C-7741-9403-AAAF-9B4527EAF20C}</Project>
       <Name>UnityEngine.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="UnityEngine.TestRunner.csproj">
-      <Project>{0EC6A98E-EA83-28A2-9517-9F85F53454DB}</Project>
-      <Name>UnityEngine.TestRunner</Name>
-    </ProjectReference>
     <ProjectReference Include="UnityEditor.TestRunner.csproj">
       <Project>{CDF30682-014D-5E29-5504-3CE54BE5535D}</Project>
       <Name>UnityEditor.TestRunner</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.TestRunner.csproj">
+      <Project>{0EC6A98E-EA83-28A2-9517-9F85F53454DB}</Project>
+      <Name>UnityEngine.TestRunner</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

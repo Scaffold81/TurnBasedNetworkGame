@@ -69,8 +69,8 @@
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\InstalledPackagesManager.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\Configuration\PackageConfig.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\NugetPackageUpdater.cs" />
-    <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\PackageSource\INugetPackageSource.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\Ui\NugetWindowTab.cs" />
+    <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\PackageSource\INugetPackageSource.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\PackageSource\NugetPackageSourceV3.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\NugetPackageUninstaller.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\Models\NugetFrameworkGroup.cs" />
@@ -117,13 +117,13 @@
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\Models\SerializableNugetPackage.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\Configuration\ConfigurationEncryptionHelper.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\PackageSource\NugetPackageSourceV2.cs" />
-    <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\Models\NugetPackageLocal.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\Helper\WebRequestHelper.cs" />
+    <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\Models\NugetPackageLocal.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\PackageContentManager.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\PackageSource\NugetODataResponse.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\Configuration\PackagesConfigFile.cs" />
-    <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\Helper\AssemblyLoader.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\PackageSource\NugetPackageSourceLocal.cs" />
+    <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\Helper\AssemblyLoader.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\Models\NugetPackageV3.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\Configuration\NugetForUnityPluginId.cs" />
     <Compile Include="Library\PackageCache\com.github-glitchenzo.nugetforunity@f789083c31\Editor\PluginSupport\PluginRegistry.cs" />
@@ -1026,13 +1026,13 @@
       <Project>{62E5270C-7741-9403-AAAF-9B4527EAF20C}</Project>
       <Name>UnityEngine.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="UnityEngine.TestRunner.csproj">
-      <Project>{0EC6A98E-EA83-28A2-9517-9F85F53454DB}</Project>
-      <Name>UnityEngine.TestRunner</Name>
-    </ProjectReference>
     <ProjectReference Include="UnityEditor.TestRunner.csproj">
       <Project>{CDF30682-014D-5E29-5504-3CE54BE5535D}</Project>
       <Name>UnityEditor.TestRunner</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.TestRunner.csproj">
+      <Project>{0EC6A98E-EA83-28A2-9517-9F85F53454DB}</Project>
+      <Name>UnityEngine.TestRunner</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

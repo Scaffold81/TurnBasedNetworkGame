@@ -75,9 +75,9 @@
     <Compile Include="Assets\Plugins\Zenject\Source\Main\BindingId.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\CopyNonLazyBinder.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\GameObject\NameTransformScopeConcreteIdArgConditionCopyNonLazyBinder.cs" />
-    <Compile Include="Assets\Plugins\Zenject\Source\Main\DiContainer.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\ConcreteBinders\ConcreteBinderNonGeneric.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\SubContainerCreators\SubContainerCreatorByNewGameObjectDynamicContext.cs" />
+    <Compile Include="Assets\Plugins\Zenject\Source\Main\DiContainer.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\PrefabProviders\PrefabProviderResource.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Runtime\SceneContextRegistry.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\SubContainerCreators\SubContainerCreatorByInstanceGetter.cs" />
@@ -166,10 +166,10 @@
     <Compile Include="Assets\Plugins\Zenject\Source\Factories\Pooling\Util\PoolCleanupChecker.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Runtime\GuiRenderableManager.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\Factory\FactoryToChoiceIdBinder\FactoryToChoiceIdBinder0.cs" />
-    <Compile Include="Assets\Plugins\Zenject\Source\Factories\Pooling\Static\PoolableStaticMemoryPool.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\IdBinder.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Main\IInstantiator.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\GetterProvider.cs" />
+    <Compile Include="Assets\Plugins\Zenject\Source\Factories\Pooling\Static\PoolableStaticMemoryPool.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\BindInfo\FactoryBindInfo.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Internal\PreserveAttribute.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\PrefabProviders\PrefabProvider.cs" />
@@ -218,8 +218,8 @@
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\Factory\FactoryToChoiceBinder\FactoryToChoiceBinder6.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\PrefabProviders\PrefabProviderCustom.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\ComponentProviders\AddToGameObjectComponentProviders\AddToExistingGameObjectComponentProvider.cs" />
-    <Compile Include="Assets\Plugins\Zenject\Source\Providers\GameObjectProviders\EmptyGameObjectProvider.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\SubContainerCreators\SubContainerCreatorByNewPrefabDynamicContext.cs" />
+    <Compile Include="Assets\Plugins\Zenject\Source\Providers\GameObjectProviders\EmptyGameObjectProvider.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\SubContainerCreators\SubContainerCreatorUtil.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Factories\Pooling\Util\HashSetPool.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Install\Contexts\SceneContext.cs" />
@@ -233,9 +233,9 @@
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\InstantiateCallbackConditionCopyNonLazyBinder.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\CachedOpenTypeProvider.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\Factory\FactoryFromBinder\SubContainerBinder\FactorySubContainerBinderBase.cs" />
-    <Compile Include="Assets\Plugins\Zenject\Source\Providers\PrefabCreators\PrefabInstantiator.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\SubContainerCreators\SubContainerCreatorByNewPrefabWithParams.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Runtime\Kernels\SceneKernel.cs" />
+    <Compile Include="Assets\Plugins\Zenject\Source\Providers\PrefabCreators\PrefabInstantiator.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Finalizers\ProviderBindingFinalizer.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Factories\PlaceholderFactoryBase.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Runtime\GuiRenderer.cs" />
@@ -257,8 +257,8 @@
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\ComponentProviders\GetFromGameObjectGetterComponentProvider.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\Factory\FactoryToChoiceIdBinder\FactoryToChoiceIdBinder1.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\Factory\FactoryFromBinder\SubContainerBinder\FactorySubContainerBinder3.cs" />
-    <Compile Include="Assets\Plugins\Zenject\Source\Providers\ScriptableObjectResourceProvider.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Internal\Log.cs" />
+    <Compile Include="Assets\Plugins\Zenject\Source\Providers\ScriptableObjectResourceProvider.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\ConditionCopyNonLazyBinder.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\FromBinders\FromBinder.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\BindInfo\MemoryPoolBindInfo.cs" />
@@ -267,8 +267,8 @@
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\SubContainerBinder.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Internal\LinqExtensions.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\Factory\FactoryFromBinder\FactoryFromBinder6.cs" />
-    <Compile Include="Assets\Plugins\Zenject\Source\Install\Contexts\SceneDecoratorContext.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\SubContainerDependencyProvider.cs" />
+    <Compile Include="Assets\Plugins\Zenject\Source\Install\Contexts\SceneDecoratorContext.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\MethodProviderUntyped.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Util\ZenUtilInternal.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Factories\IFactory.cs" />
@@ -587,6 +587,10 @@
       <HintPath>Assets\Packages\R3.1.3.0\lib\netstandard2.1\R3.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.Collections.LowLevel.ILSupport">
+      <HintPath>Library\PackageCache\com.unity.collections@1.2.4\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
       <HintPath>Assets\Packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
       <Private>False</Private>
@@ -609,6 +613,14 @@
     </Reference>
     <Reference Include="System.Threading.Channels">
       <HintPath>Assets\Packages\System.Threading.Channels.8.0.0\lib\netstandard2.1\System.Threading.Channels.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ObservableCollections">
+      <HintPath>Assets\Packages\ObservableCollections.3.3.4\lib\netstandard2.1\ObservableCollections.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ObservableCollections.R3">
+      <HintPath>Assets\Packages\ObservableCollections.R3.3.3.4\lib\netstandard2.1\ObservableCollections.R3.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">

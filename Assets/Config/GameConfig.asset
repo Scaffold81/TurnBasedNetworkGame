@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd1e058564a25c34c91c5b6f9c9ae6fc, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: 
+  turnDuration: 60
+  drawResolutionTurn: 15
+  enableInfiniteSpeed: 1
+  fieldWidth: 20
+  fieldHeight: 20
+  startingUnitsPerType: 2
+  rangedUnitSpeed: 2
+  rangedUnitAttackRange: 4
+  meleeUnitSpeed: 4
+  meleeUnitAttackRange: 1
+  enableFieldStreaming: 1
+  enableLineOfSight: 1
+  enableAntiCheat: 1
+  useGeometricTargeting: 1
+  maxActionsPerSecond: 5
+  movementTimeTolerance: 0.5
+  showMovementPath: 1
+  showAttackRange: 1
+  showUnitSelection: 1
+  maxStreamingCellsPerRequest: 100
+  turnTimerUpdateRate: 0.1
