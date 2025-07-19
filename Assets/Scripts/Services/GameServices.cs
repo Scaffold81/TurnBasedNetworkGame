@@ -22,33 +22,6 @@ namespace TurnBasedGame.Services
     /// Остальные игровые сервисы (заглушки)
     /// TODO: Реализовать полную функциональность
     /// </summary>
-    public class TurnService : ITurnService
-    {
-        private readonly ReactiveProperty<float> _turnTimer = new(GameConstants.TURN_DURATION);
-        private readonly ReactiveProperty<bool> _isMyTurn = new(true);
-        private readonly ReactiveProperty<bool> _canMove = new(true);
-        private readonly ReactiveProperty<bool> _canAttack = new(true);
-
-        public ReadOnlyReactiveProperty<float> TurnTimer { get; private set; }
-        public ReadOnlyReactiveProperty<bool> IsMyTurn { get; private set; }
-        public ReadOnlyReactiveProperty<bool> CanMove { get; private set; }
-        public ReadOnlyReactiveProperty<bool> CanAttack { get; private set; }
-
-        public TurnService()
-        {
-            TurnTimer = _turnTimer.ToReadOnlyReactiveProperty();
-            IsMyTurn = _isMyTurn.ToReadOnlyReactiveProperty();
-            CanMove = _canMove.ToReadOnlyReactiveProperty();
-            CanAttack = _canAttack.ToReadOnlyReactiveProperty();
-            Debug.Log("[TurnService] Initialized (Stub)");
-        }
-
-        public void EndTurn() => Debug.Log("[TurnService] EndTurn (STUB)");
-        public void StartTurn(PlayerId playerId) => Debug.Log($"[TurnService] StartTurn: {playerId} (STUB)");
-        public PlayerId GetCurrentPlayer() { Debug.Log("[TurnService] GetCurrentPlayer -> Player1 (STUB)"); return PlayerId.Player1; }
-        public int GetCurrentTurnNumber() { Debug.Log("[TurnService] GetCurrentTurnNumber -> 1 (STUB)"); return 1; }
-        public float GetRemainingTime() { Debug.Log("[TurnService] GetRemainingTime -> 60 (STUB)"); return 60f; }
-    }
 
     public class InputService : MonoBehaviour, IInputService
     {

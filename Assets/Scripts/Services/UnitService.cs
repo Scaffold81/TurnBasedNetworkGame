@@ -67,10 +67,9 @@ namespace TurnBasedGame.Services
             // Подписываемся на изменения состояния игры
             _disposables.Add(_gameState.GameState.Subscribe(OnGameStateChanged));
             
-            // Подписываемся на изменения юнитов
-            _disposables.Add(_gameState.Units.ObserveAdd().Subscribe(e => OnUnitAdded(e.Value)));
-            _disposables.Add(_gameState.Units.ObserveRemove().Subscribe(e => OnUnitRemoved(e.Value)));
-            _disposables.Add(_gameState.Units.ObserveReplace().Subscribe(e => OnUnitUpdated(e.NewValue)));
+            // Подписываемся на события игры для отслеживания изменений юнитов
+            _disposables.Add(_gameEvents.UnitMoved.Subscribe(evt => OnUnitMoved(evt)));
+            _disposables.Add(_gameEvents.UnitAttacked.Subscribe(evt => OnUnitAttacked(evt)));
 
             // Подписываемся на события смены хода
             _disposables.Add(_gameEvents.TurnChanged.Subscribe(OnTurnChanged));
@@ -455,31 +454,44 @@ namespace TurnBasedGame.Services
             }
         }
 
-        private void OnUnitAdded(UnitData unit)
+        private void OnUnitMoved(UnitMovedEvent evt)
         {
-            Debug.Log($"[UnitService] Unit {unit.id} added to game");
-        }
-
-        private void OnUnitRemoved(UnitData unit)
-        {
-            Debug.Log($"[UnitService] Unit {unit.id} removed from game");
-
-            // Сбрасываем выбор, если удален выбранный юнит
-            if (_selectedUnit.Value.HasValue && _selectedUnit.Value.Value.id == unit.id)
+            Debug.Log($"[UnitService] Unit {evt.unitId} moved from {evt.fromPosition} to {evt.toPosition}");
+            
+            // Обновляем выбранный юнит, если он двигался
+            if (_selectedUnit.Value.HasValue && _selectedUnit.Value.Value.id == evt.unitId)
             {
-                DeselectUnit();
+                var updatedUnit = _gameState.GetUnit(evt.unitId);
+                if (updatedUnit.HasValue)
+                {
+                    _selectedUnit.Value = updatedUnit.Value;
+                    UpdateAttackTargets(updatedUnit.Value);
+                }
             }
         }
 
-        private void OnUnitUpdated(UnitData unit)
+        private void OnUnitAttacked(UnitAttackedEvent evt)
         {
-            Debug.Log($"[UnitService] Unit {unit.id} updated");
-
-            // Обновляем выбранный юнит, если он был изменен
-            if (_selectedUnit.Value.HasValue && _selectedUnit.Value.Value.id == unit.id)
+            Debug.Log($"[UnitService] Unit {evt.attackerId} attacked unit {evt.targetId}");
+            
+            // Обновляем выбранный юнит
+            if (_selectedUnit.Value.HasValue)
             {
-                _selectedUnit.Value = unit;
-                UpdateAttackTargets(unit);
+                var selectedId = _selectedUnit.Value.Value.id;
+                if (selectedId == evt.attackerId || selectedId == evt.targetId)
+                {
+                    var updatedUnit = _gameState.GetUnit(selectedId);
+                    if (updatedUnit.HasValue)
+                    {
+                        _selectedUnit.Value = updatedUnit.Value;
+                        UpdateAttackTargets(updatedUnit.Value);
+                    }
+                    else
+                    {
+                        // Юнит был уничтожен
+                        DeselectUnit();
+                    }
+                }
             }
         }
 

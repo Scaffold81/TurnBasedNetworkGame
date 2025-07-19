@@ -58,7 +58,7 @@ namespace TurnBasedGame.Core
     /// Данные юнита
     /// </summary>
     [Serializable]
-    public struct UnitData : INetworkSerializable
+    public struct UnitData : INetworkSerializable, IEquatable<UnitData>
     {
         public int id;
         public PlayerId owner;
@@ -87,6 +87,32 @@ namespace TurnBasedGame.Core
             serializer.SerializeValue(ref visionRange);
             serializer.SerializeValue(ref hasMovedThisTurn);
             serializer.SerializeValue(ref hasAttackedThisTurn);
+        }
+
+        // Реализация IEquatable<UnitData> для NetworkList
+        public bool Equals(UnitData other)
+        {
+            return id == other.id;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is UnitData other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return id.GetHashCode();
+        }
+
+        public static bool operator ==(UnitData left, UnitData right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(UnitData left, UnitData right)
+        {
+            return !left.Equals(right);
         }
 
         /// <summary>

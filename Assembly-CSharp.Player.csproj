@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\Core\DataStructures.cs" />
     <Compile Include="Assets\Scripts\ZENJECT_BINDINGS_REFERENCE.cs" />
     <Compile Include="Assets\Scripts\Services\AdvancedServices.cs" />
+    <Compile Include="Assets\Scripts\Services\TurnService.cs" />
     <Compile Include="Assets\Scripts\COMPILATION_FIXES.cs" />
     <Compile Include="Assets\Scripts\Installers\GameInstaller.cs" />
     <Compile Include="Assets\Scripts\Services\UnitService.cs" />

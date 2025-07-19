@@ -20,8 +20,9 @@ using TurnBasedGame.Services;
 namespace TurnBasedGame.Installers
 {
     /// <summary>
-    /// Основной инсталлер зависимостей для игры
-    /// Настраивает все сервисы через Zenject DI
+    /// Главный инсталлер зависимостей для игры
+    /// Устанавливает все сервисы в правильном порядке
+    /// Оптимизирован для тестирования NetworkGameService
     /// </summary>
     public class GameInstaller : MonoInstaller
     {
@@ -29,30 +30,39 @@ namespace TurnBasedGame.Installers
         [SerializeField] 
         private GameConfig gameConfig;
 
+        [Header("=== НАСТРОЙКИ ===")]
+        [SerializeField] 
+        private bool enableAdvancedFeatures = true;
+
+        [SerializeField] 
+        private bool showInstallationLog = true;
+
         public override void InstallBindings()
         {
-            Debug.Log("[GameInstaller] Installing dependencies...");
+            if (showInstallationLog)
+            {
+                Debug.Log("[GameInstaller] ==================== STARTING DEPENDENCY INSTALLATION ====================");
+            }
 
-            // === КОНФИГУРАЦИЯ ===
+            // Устанавливаем все зависимости в правильном порядке
             InstallConfiguration();
-
-            // === ОСНОВНЫЕ СЕРВИСЫ ===
             InstallCoreServices();
-
-            // === ИГРОВЫЕ СЕРВИСЫ ===
-            InstallGameServices();
-
-            // === UI СЕРВИСЫ ===
+            InstallNetworkServices();
+            InstallGameplayServices();
             InstallUIServices();
 
-            // === ОПЦИОНАЛЬНЫЕ ПРОДВИНУТЫЕ СЕРВИСЫ ===
-            if (gameConfig != null)
+            if (enableAdvancedFeatures)
             {
                 InstallAdvancedServices();
             }
 
-            Debug.Log("[GameInstaller] All dependencies installed successfully!");
+            if (showInstallationLog)
+            {
+                Debug.Log("[GameInstaller] ==================== DEPENDENCY INSTALLATION COMPLETE ====================");
+            }
         }
+
+        #region Установка зависимостей
 
         private void InstallConfiguration()
         {
@@ -60,11 +70,12 @@ namespace TurnBasedGame.Installers
             if (gameConfig != null)
             {
                 Container.Bind<GameConfig>().FromInstance(gameConfig).AsSingle();
-                Debug.Log("[GameInstaller] GameConfig bound");
+                Debug.Log($"[GameInstaller] GameConfig bound: {gameConfig.name}");
             }
             else
             {
-                Debug.LogWarning("[GameInstaller] GameConfig is null, using default settings");
+                Debug.LogWarning("[GameInstaller] GameConfig is null, creating default configuration");
+                
                 // Создаем дефолтную конфигурацию
                 var defaultConfig = ScriptableObject.CreateInstance<GameConfig>();
                 Container.Bind<GameConfig>().FromInstance(defaultConfig).AsSingle();
@@ -73,66 +84,244 @@ namespace TurnBasedGame.Installers
 
         private void InstallCoreServices()
         {
-            // Основные сервисы состояния и событий
+            // Основные сервисы состояния и событий - порядок важен!
             Container.Bind<IGameStateService>().To<GameStateService>().AsSingle();
-            Container.Bind<IGameEventsService>().To<GameEventsService>().AsSingle();
+            
+            Container.Bind<IGameEventsService>().To<GameEventsService>().AsSingle()
+                .NonLazy(); // Инициализируем сразу для обработки событий
             
             Debug.Log("[GameInstaller] Core services installed");
         }
 
-        private void InstallGameServices()
+        private void InstallNetworkServices()
         {
-            // Сетевые сервисы - NetworkGameService это MonoBehaviour, поэтому используем FromNewComponentOnNewGameObject
-            Container.Bind<INetworkGameService>().To<NetworkGameService>().FromNewComponentOnNewGameObject().AsSingle();
-            
-            // Игровая логика
-            Container.Bind<IUnitService>().To<UnitService>().AsSingle().NonLazy(); // NonLazy для инициализации
+            // NetworkGameService - важно правильно настроить как NetworkBehaviour
+            Container.Bind<INetworkGameService>()
+                .To<NetworkGameService>()
+                .FromNewComponentOnNewGameObject()
+                .AsSingle()
+                .NonLazy(); // Принудительная инициализация для сетевого сервиса
+
+            Debug.Log("[GameInstaller] Network services installed");
+        }
+
+        private void InstallGameplayServices()
+        {
+            // Основные игровые сервисы
+            Container.Bind<IUnitService>().To<UnitService>().AsSingle()
+                .NonLazy(); // Важно для правильной инициализации
+
             Container.Bind<ITurnService>().To<TurnService>().AsSingle();
+
             Container.Bind<IGameFieldService>().To<GameFieldService>().AsSingle();
-            Container.Bind<IInputService>().To<InputService>().FromNewComponentOnNewGameObject().AsSingle();
-            Container.Bind<IPathfindingService>().To<PathfindingService>().AsSingle();
-            Container.Bind<IGameRulesService>().To<GameRulesService>().AsSingle();
             
-            Debug.Log("[GameInstaller] Game services installed");
+            Container.Bind<IPathfindingService>().To<PathfindingService>().AsSingle();
+
+            Container.Bind<IGameRulesService>().To<GameRulesService>().AsSingle();
+
+            // Input Service как MonoBehaviour компонент
+            Container.Bind<IInputService>().To<InputService>()
+                .FromNewComponentOnNewGameObject()
+                .AsSingle();
+
+            Debug.Log("[GameInstaller] Gameplay services installed");
         }
 
         private void InstallUIServices()
         {
-            // UI и визуализация - UIReactiveService это MonoBehaviour
-            Container.Bind<IUIReactiveService>().To<UIReactiveService>().FromNewComponentOnNewGameObject().AsSingle();
+            // Основной UI сервис как MonoBehaviour компонент
+            Container.Bind<IUIReactiveService>().To<UIReactiveService>()
+                .FromNewComponentOnNewGameObject()
+                .AsSingle();
+
+            // Настройки игры - всегда нужны
+            Container.Bind<IGameSettingsService>().To<GameSettingsService>().AsSingle();
+
+            // Опциональные UI сервисы
             Container.Bind<IVisualizationService>().To<VisualizationService>().AsSingle();
             Container.Bind<IAudioService>().To<AudioService>().AsSingle();
             Container.Bind<IGameStatisticsService>().To<GameStatisticsService>().AsSingle();
-            Container.Bind<IGameSettingsService>().To<GameSettingsService>().AsSingle();
-            
+
             Debug.Log("[GameInstaller] UI services installed");
         }
 
         private void InstallAdvancedServices()
         {
-            // Продвинутые опциональные функции
-            if (gameConfig.EnableFieldStreaming)
-            {
-                Container.Bind<IFieldStreamingService>().To<FieldStreamingService>().AsSingle();
-                Debug.Log("[GameInstaller] Field streaming service installed");
-            }
+            // Получаем конфигурацию для проверки настроек
+            var config = gameConfig;
 
-            if (gameConfig.EnableAntiCheat)
+            // Продвинутые функции
+            if (config != null && config.EnableAntiCheat)
             {
-                Container.Bind<IServerValidationService>().To<ServerValidationService>().AsSingle();
+                Container.Bind<IServerValidationService>().To<ServerValidationService>()
+                    .AsSingle();
+
                 Debug.Log("[GameInstaller] Server validation service installed");
             }
 
-            if (gameConfig.EnableLineOfSight)
+            if (config != null && config.EnableFieldStreaming)
+            {
+                Container.Bind<IFieldStreamingService>().To<FieldStreamingService>()
+                    .AsSingle();
+
+                Debug.Log("[GameInstaller] Field streaming service installed");
+            }
+
+            if (config != null && config.EnableLineOfSight)
             {
                 Container.Bind<ILineOfSightService>().To<LineOfSightService>().AsSingle();
                 Debug.Log("[GameInstaller] Line of sight service installed");
             }
 
-            if (gameConfig.UseGeometricTargeting)
+            if (config != null && config.UseGeometricTargeting)
             {
                 Container.Bind<IAdvancedTargetingService>().To<AdvancedTargetingService>().AsSingle();
                 Debug.Log("[GameInstaller] Advanced targeting service installed");
+            }
+
+            Debug.Log($"[GameInstaller] Advanced services configured");
+        }
+
+        #endregion
+
+        #region Валидация и отладка
+
+        /// <summary>
+        /// Проверка корректности установки всех зависимостей
+        /// Особое внимание к NetworkGameService для тестирования
+        /// </summary>
+        [ContextMenu("Validate Installation")]
+        private bool ValidateInstallation()
+        {
+            if (Container == null)
+            {
+                Debug.LogWarning("[GameInstaller] Container not initialized");
+                return false;
+            }
+
+            Debug.Log("[GameInstaller] === VALIDATING INSTALLATION ===");
+
+            bool isValid = true;
+
+            // Проверяем критически важные сервисы
+            if (!Container.HasBinding<GameConfig>())
+            {
+                Debug.LogError("[GameInstaller] ❌ GameConfig not bound!");
+                isValid = false;
+            }
+            else
+            {
+                Debug.Log("[GameInstaller] ✅ GameConfig bound");
+            }
+
+            if (!Container.HasBinding<IGameStateService>())
+            {
+                Debug.LogError("[GameInstaller] ❌ IGameStateService not bound!");
+                isValid = false;
+            }
+            else
+            {
+                Debug.Log("[GameInstaller] ✅ IGameStateService bound");
+            }
+
+            if (!Container.HasBinding<IGameEventsService>())
+            {
+                Debug.LogError("[GameInstaller] ❌ IGameEventsService not bound!");
+                isValid = false;
+            }
+            else
+            {
+                Debug.Log("[GameInstaller] ✅ IGameEventsService bound");
+            }
+
+            // КРИТИЧЕСКИ ВАЖНО для тестирования: NetworkGameService
+            if (!Container.HasBinding<INetworkGameService>())
+            {
+                Debug.LogError("[GameInstaller] ❌ INetworkGameService not bound! NetworkGameService tests will fail!");
+                isValid = false;
+            }
+            else
+            {
+                Debug.Log("[GameInstaller] ✅ INetworkGameService bound - ready for testing");
+            }
+
+            // Проверяем игровые сервисы
+            if (!Container.HasBinding<IUnitService>())
+            {
+                Debug.LogError("[GameInstaller] ❌ IUnitService not bound!");
+                isValid = false;
+            }
+            else
+            {
+                Debug.Log("[GameInstaller] ✅ IUnitService bound");
+            }
+
+            if (!Container.HasBinding<ITurnService>())
+            {
+                Debug.LogError("[GameInstaller] ❌ ITurnService not bound!");
+                isValid = false;
+            }
+            else
+            {
+                Debug.Log("[GameInstaller] ✅ ITurnService bound");
+            }
+
+            if (isValid)
+            {
+                Debug.Log("[GameInstaller] 🎉 Installation validation PASSED - all critical services bound");
+            }
+            else
+            {
+                Debug.LogError("[GameInstaller] 💥 Installation validation FAILED - missing critical services");
+            }
+
+            return isValid;
+        }
+
+        /// <summary>
+        /// Быстрая проверка готовности к тестированию NetworkGameService
+        /// </summary>
+        [ContextMenu("Check NetworkGameService Test Readiness")]
+        private void CheckNetworkTestReadiness()
+        {
+            Debug.Log("[GameInstaller] === NETWORK TEST READINESS CHECK ===");
+
+            bool ready = true;
+            
+            if (!Container.HasBinding<INetworkGameService>())
+            {
+                Debug.LogError("❌ INetworkGameService not bound - tests will fail!");
+                ready = false;
+            }
+
+            if (!Container.HasBinding<IGameStateService>())
+            {
+                Debug.LogError("❌ IGameStateService not bound - needed for tests!");
+                ready = false;
+            }
+
+            if (!Container.HasBinding<IGameEventsService>())
+            {
+                Debug.LogError("❌ IGameEventsService not bound - needed for tests!");
+                ready = false;
+            }
+
+            if (!Container.HasBinding<GameConfig>())
+            {
+                Debug.LogError("❌ GameConfig not bound - needed for tests!");
+                ready = false;
+            }
+
+            if (ready)
+            {
+                Debug.Log("🎉 NetworkGameService testing environment is READY!");
+                Debug.Log("✅ All required dependencies are bound");
+                Debug.Log("✅ You can run NetworkGameService tests in GameInitializer");
+            }
+            else
+            {
+                Debug.LogError("💥 NetworkGameService testing environment is NOT READY!");
+                Debug.LogError("❌ Fix missing dependencies before running tests");
             }
         }
 
@@ -144,7 +333,19 @@ namespace TurnBasedGame.Installers
             if (gameConfig == null)
             {
                 Debug.LogWarning("[GameInstaller] GameConfig is not assigned! Please assign a GameConfig asset.");
+                
+                // Попытка найти GameConfig в проекте
+                #if UNITY_EDITOR
+                var configs = UnityEditor.AssetDatabase.FindAssets("t:GameConfig");
+                if (configs.Length > 0)
+                {
+                    var path = UnityEditor.AssetDatabase.GUIDToAssetPath(configs[0]);
+                    Debug.Log($"[GameInstaller] Found GameConfig at: {path}");
+                }
+                #endif
             }
         }
+
+        #endregion
     }
 }

@@ -46,7 +46,8 @@ namespace TurnBasedGame.Core
     {
         WaitingForPlayers = 0,
         Playing = 1,
-        GameOver = 2
+        GameOver = 2,
+        GameEnded = 3
     }
 
     /// <summary>

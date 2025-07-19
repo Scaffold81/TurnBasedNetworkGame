@@ -13,94 +13,120 @@
 
 using UnityEngine;
 using Zenject;
-using R3;
 using TurnBasedGame.Core;
 using TurnBasedGame.Core.Interfaces;
+using TurnBasedGame.Services;
 
 namespace TurnBasedGame
 {
     /// <summary>
-    /// Главный инициализатор игры - тестирует DI и заглушки сервисов
+    /// Главный инициализатор игры
+    /// Проверяет DI и запускает базовую логику игры
     /// </summary>
     public class GameInitializer : MonoBehaviour
     {
-        [Header("=== ТЕСТИРОВАНИЕ DI ===")]
+        [Header("=== НАСТРОЙКИ ИНИЦИАЛИЗАЦИИ ===")]
         [SerializeField] 
-        private bool testDIOnStart = true;
+        private bool validateDI = true;
 
         [SerializeField] 
         private bool createTestUnits = true;
 
+        [SerializeField] 
+        private bool startGameAutomatically = true;
+
         // Инжектируемые сервисы
         [Inject] private IGameStateService _gameState;
         [Inject] private IGameEventsService _gameEvents;
+        [Inject] private INetworkGameService _networkGame;
         [Inject] private IUnitService _unitService;
         [Inject] private ITurnService _turnService;
-        [Inject] private INetworkGameService _networkGame;
         [Inject] private IGameFieldService _gameFieldService;
-        [Inject] private IPathfindingService _pathfindingService;
         [Inject] private GameConfig _gameConfig;
 
         private void Start()
         {
-            Debug.Log("=== GAME INITIALIZER STARTED ===");
+            LogHeader("GAME INITIALIZER STARTED");
 
-            if (testDIOnStart)
+            if (validateDI)
             {
-                TestDependencyInjection();
+                ValidateDependencyInjection();
             }
 
             if (createTestUnits)
             {
-                CreateTestUnits();
+                CreateInitialUnits();
             }
 
-            TestReactiveEvents();
+            if (startGameAutomatically)
+            {
+                StartGame();
+            }
 
-            Debug.Log("=== GAME INITIALIZATION COMPLETE ===");
+            LogHeader("GAME INITIALIZATION COMPLETE");
         }
 
-        private void TestDependencyInjection()
-        {
-            Debug.Log("--- Testing Dependency Injection ---");
+        #region Валидация DI
 
-            // Проверяем, что все сервисы инжектированы
-            Debug.Log($"GameStateService: {(_gameState != null ? "✓" : "✗")}");
-            Debug.Log($"GameEventsService: {(_gameEvents != null ? "✓" : "✗")}");
-            Debug.Log($"UnitService: {(_unitService != null ? "✓" : "✗")}");
-            Debug.Log($"TurnService: {(_turnService != null ? "✓" : "✗")}");
-            Debug.Log($"NetworkGameService: {(_networkGame != null ? "✓" : "✗")}");
-            Debug.Log($"GameFieldService: {(_gameFieldService != null ? "✓" : "✗")}");
-            Debug.Log($"PathfindingService: {(_pathfindingService != null ? "✓" : "✗")}");
-            Debug.Log($"GameConfig: {(_gameConfig != null ? "✓" : "✗")}");
+        private void ValidateDependencyInjection()
+        {
+            LogSection("Validating Dependency Injection");
+
+            bool allValid = true;
+
+            allValid &= CheckService("GameStateService", _gameState);
+            allValid &= CheckService("GameEventsService", _gameEvents);
+            allValid &= CheckService("NetworkGameService", _networkGame);
+            allValid &= CheckService("UnitService", _unitService);
+            allValid &= CheckService("TurnService", _turnService);
+            allValid &= CheckService("GameFieldService", _gameFieldService);
+            allValid &= CheckService("GameConfig", _gameConfig);
+
+            if (allValid)
+            {
+                LogSuccess("All services injected successfully");
+            }
+            else
+            {
+                LogError("Some services failed to inject!");
+            }
 
             if (_gameConfig != null)
             {
-                Debug.Log($"Config - Field Size: {_gameConfig.FieldWidth}x{_gameConfig.FieldHeight}");
-                Debug.Log($"Config - Turn Duration: {_gameConfig.TurnDuration}s");
-                Debug.Log($"Config - Starting Units Per Type: {_gameConfig.StartingUnitsPerType}");
-                Debug.Log($"Config - Features: Streaming={_gameConfig.EnableFieldStreaming}, LOS={_gameConfig.EnableLineOfSight}, AntiCheat={_gameConfig.EnableAntiCheat}");
+                LogInfo($"Game Config: {_gameConfig.FieldWidth}x{_gameConfig.FieldHeight}, {_gameConfig.TurnDuration}s turns");
             }
         }
 
-        private void CreateTestUnits()
+        private bool CheckService(string serviceName, object service)
         {
-            Debug.Log("--- Creating Test Units ---");
+            bool isValid = service != null;
+            string status = isValid ? "✓" : "✗";
+            LogInfo($"{status} {serviceName}: {(isValid ? "OK" : "MISSING")}");
+            return isValid;
+        }
+
+        #endregion
+
+        #region Инициализация игры
+
+        private void CreateInitialUnits()
+        {
+            LogSection("Creating Initial Units");
 
             if (_gameConfig == null || _gameState == null)
             {
-                Debug.LogError("Cannot create test units - missing services!");
+                LogError("Cannot create units - missing GameConfig or GameState!");
                 return;
             }
 
-            // Создаем тестовые юниты для обеих сторон
+            // Создаем тестовые юниты
             var unitId = 1;
 
             // Юниты игрока 1
             var rangedUnit1 = _gameConfig.CreateRangedUnit(unitId++, PlayerId.Player1, new Vector2Int(2, 2));
             var meleeUnit1 = _gameConfig.CreateMeleeUnit(unitId++, PlayerId.Player1, new Vector2Int(3, 2));
 
-            // Юниты игрока 2  
+            // Юниты игрока 2
             var rangedUnit2 = _gameConfig.CreateRangedUnit(unitId++, PlayerId.Player2, new Vector2Int(17, 17));
             var meleeUnit2 = _gameConfig.CreateMeleeUnit(unitId++, PlayerId.Player2, new Vector2Int(16, 17));
 
@@ -110,266 +136,118 @@ namespace TurnBasedGame
             _gameState.AddUnit(rangedUnit2);
             _gameState.AddUnit(meleeUnit2);
 
-            Debug.Log($"Created {_gameState.Units.Count} test units");
-            Debug.Log($"Player 1 units: {_gameState.GetUnitCount(PlayerId.Player1)}");
-            Debug.Log($"Player 2 units: {_gameState.GetUnitCount(PlayerId.Player2)}");
+            LogInfo($"Created {_gameState.Units.Count} units");
+        }
 
-            // Устанавливаем начальное состояние игры
+        private void StartGame()
+        {
+            LogSection("Starting Game");
+
+            if (_gameState == null)
+            {
+                LogError("Cannot start game - GameStateService is null!");
+                return;
+            }
+
+            // Устанавливаем начальное состояние
             var gameState = GameState.Default;
             gameState.phase = GamePhase.Playing;
             gameState.currentPlayer = PlayerId.Player1;
+            gameState.canMove = true;
+            gameState.canAttack = true;
+            gameState.turnTimeLeft = _gameConfig?.TurnDuration ?? 60f;
+
             _gameState.UpdateGameState(gameState);
+
+            LogSuccess("Game started successfully");
         }
 
-        private void TestReactiveEvents()
+        #endregion
+
+        #region Контекстные методы для отладки
+
+        [ContextMenu("Validate All Services")]
+        private void ValidateAllServices()
         {
-            Debug.Log("--- Testing Reactive Events ---");
-
-            if (_gameEvents == null)
-            {
-                Debug.LogError("GameEventsService not available!");
-                return;
-            }
-
-            // Подписываемся на события для тестирования
-            _gameEvents.UnitSelected.Subscribe(evt => 
-                Debug.Log($"[EVENT] Unit {evt.unitId} selected by {evt.playerId}")
-            );
-
-            _gameEvents.UnitMoved.Subscribe(evt => 
-                Debug.Log($"[EVENT] Unit {evt.unitId} moved from {evt.fromPosition} to {evt.toPosition}")
-            );
-
-            _gameEvents.TurnChanged.Subscribe(evt => 
-                Debug.Log($"[EVENT] Turn changed to {evt.newCurrentPlayer}, turn #{evt.turnNumber}, time left: {evt.turnTimeLeft:F1}s")
-            );
-
-            _gameEvents.GameStateChanged.Subscribe(evt => 
-                Debug.Log($"[EVENT] Game state changed: Phase={evt.newState.phase}, Turn={evt.newState.currentTurn}, Player={evt.newState.currentPlayer}")
-            );
-
-            // Тестируем события
-            _gameEvents.PublishUnitSelected(1, PlayerId.Player1);
-            _gameEvents.PublishUnitMoved(1, new Vector2Int(2, 2), new Vector2Int(3, 3), PlayerId.Player1);
-            _gameEvents.PublishTurnChanged(PlayerId.Player2, 2, 59f);
-
-            Debug.Log("Reactive events test completed");
-        }
-
-        [ContextMenu("Test Unit Selection Advanced")]
-        private void TestUnitSelectionAdvanced()
-        {
-            Debug.Log("--- Testing Advanced Unit Selection ---");
-            
-            if (_unitService == null)
-            {
-                Debug.LogError("UnitService not available!");
-                return;
-            }
-
-            // Тест 1: Выбор юнита
-            Debug.Log("Test 1: Selecting unit...");
-            _unitService.SelectUnit(1);
-            
-            var selectedUnit = _unitService.SelectedUnit.CurrentValue;
-            if (selectedUnit.HasValue)
-            {
-                Debug.Log($"Selected unit: {selectedUnit.Value.id}, type: {selectedUnit.Value.type}, owner: {selectedUnit.Value.owner}");
-            }
-            else
-            {
-                Debug.LogWarning("No unit selected!");
-            }
-
-            // Тест 2: Планирование движения
-            Debug.Log("Test 2: Planning movement...");
-            _unitService.PlanMovement(new Vector2Int(5, 5));
-            
-            var movementPath = _unitService.MovementPath.CurrentValue;
-            if (movementPath != null && movementPath.Length > 0)
-            {
-                Debug.Log($"Movement path planned: {movementPath.Length} steps");
-                Debug.Log($"Path: {string.Join(" -> ", movementPath)}");
-            }
-            else
-            {
-                Debug.LogWarning("No movement path planned!");
-            }
-
-            // Тест 3: Поиск целей для атаки
-            Debug.Log("Test 3: Finding attack targets...");
-            var attackTargets = _unitService.AttackTargets.CurrentValue;
-            if (attackTargets != null && attackTargets.Length > 0)
-            {
-                Debug.Log($"Attack targets found: {attackTargets.Length} targets");
-                Debug.Log($"Target IDs: {string.Join(", ", attackTargets)}");
-            }
-            else
-            {
-                Debug.Log("No attack targets available");
-            }
-
-            // Тест 4: Проверка возможностей
-            Debug.Log("Test 4: Checking unit capabilities...");
-            if (selectedUnit.HasValue)
-            {
-                var canMove = _unitService.CanUnitMove(selectedUnit.Value.id);
-                var canAttack = _unitService.CanUnitAttack(selectedUnit.Value.id);
-                Debug.Log($"Unit {selectedUnit.Value.id} can move: {canMove}, can attack: {canAttack}");
-            }
-
-            // Тест 5: Отмена выбора
-            Debug.Log("Test 5: Deselecting unit...");
-            _unitService.DeselectUnit();
-            
-            var deselectedUnit = _unitService.SelectedUnit.CurrentValue;
-            Debug.Log($"Unit deselected: {!deselectedUnit.HasValue}");
-
-            Debug.Log("Advanced unit selection tests completed");
-        }
-
-        [ContextMenu("Test Turn Management")]
-        private void TestTurnManagement()
-        {
-            Debug.Log("--- Testing Turn Management ---");
-            
-            if (_turnService == null)
-            {
-                Debug.LogError("TurnService not available!");
-                return;
-            }
-
-            Debug.Log($"Current Player: {_turnService.GetCurrentPlayer()}");
-            Debug.Log($"Current Turn: {_turnService.GetCurrentTurnNumber()}");
-            Debug.Log($"Time Left: {_turnService.GetRemainingTime():F1}s");
-            Debug.Log($"Is My Turn: {_turnService.IsMyTurn.CurrentValue}");
-            Debug.Log($"Can Move: {_turnService.CanMove.CurrentValue}");
-            Debug.Log($"Can Attack: {_turnService.CanAttack.CurrentValue}");
-
-            _turnService.EndTurn();
+            ValidateDependencyInjection();
         }
 
         [ContextMenu("Show Game State")]
         private void ShowGameState()
         {
-            Debug.Log("--- Current Game State ---");
-            
             if (_gameState == null)
             {
-                Debug.LogError("GameStateService not available!");
+                LogError("GameStateService is null!");
                 return;
             }
 
             var state = _gameState.GameState.CurrentValue;
-            Debug.Log($"Phase: {state.phase}");
-            Debug.Log($"Turn: {state.currentTurn}");
-            Debug.Log($"Current Player: {state.currentPlayer}");
-            Debug.Log($"Can Move: {state.canMove}");
-            Debug.Log($"Can Attack: {state.canAttack}");
-            Debug.Log($"Time Left: {state.turnTimeLeft:F1}s");
-            Debug.Log($"Infinite Speed: {state.infiniteSpeedEnabled}");
-            Debug.Log($"Total Units: {_gameState.Units.Count}");
-
-            foreach (var unit in _gameState.Units)
-            {
-                Debug.Log($"  Unit {unit.id}: {unit.type} owned by {unit.owner} at {unit.position}");
-            }
+            LogInfo($"Game Phase: {state.phase}");
+            LogInfo($"Current Player: {state.currentPlayer}");
+            LogInfo($"Turn: {state.currentTurn}");
+            LogInfo($"Time Left: {state.turnTimeLeft:F1}s");
+            LogInfo($"Can Move: {state.canMove}");
+            LogInfo($"Can Attack: {state.canAttack}");
+            LogInfo($"Total Units: {_gameState.Units.Count}");
         }
 
-        [ContextMenu("Test Pathfinding")]
-        private void TestPathfinding()
+        [ContextMenu("Check Network Status")]
+        private void CheckNetworkStatus()
         {
-            Debug.Log("--- Testing Pathfinding Service ---");
-            
-            if (_pathfindingService == null)
+            if (_networkGame == null)
             {
-                Debug.LogError("PathfindingService not available!");
+                LogError("NetworkGameService is null!");
                 return;
             }
 
-            // Тест 1: Простой путь
-            var path1 = _pathfindingService.FindPath(new Vector2Int(0, 0), new Vector2Int(5, 5));
-            Debug.Log($"Simple path (0,0) -> (5,5): {(path1 != null ? $"Found {path1.Length} points" : "No path")}");
+            LogInfo($"Network Service Type: {_networkGame.GetType().Name}");
             
-            if (path1 != null)
+            if (_networkGame is NetworkGameService networkService)
             {
-                Debug.Log($"Path length: {_pathfindingService.CalculatePathLength(path1)}");
-                Debug.Log($"Path valid: {_pathfindingService.IsPathValid(path1, 10)}");
-                
-                // Выводим путь
-                var pathStr = string.Join(" -> ", path1);
-                Debug.Log($"Path points: {pathStr}");
+                LogInfo($"Is Server: {networkService.IsServer}");
+                LogInfo($"Is Client: {networkService.IsClient}");
+                LogInfo($"Is Spawned: {networkService.IsSpawned}");
             }
-
-            // Тест 2: Путь с ограничением дистанции
-            var path2 = _pathfindingService.FindPath(new Vector2Int(0, 0), new Vector2Int(10, 10), 5);
-            Debug.Log($"Limited path (0,0) -> (10,10) max 5: {(path2 != null ? $"Found {path2.Length} points" : "No path - too far")}");
-
-            // Тест 3: Проверка проходимости
-            var walkable1 = _pathfindingService.IsPositionWalkable(new Vector2Int(5, 5));
-            var walkable2 = _pathfindingService.IsPositionWalkable(new Vector2Int(-1, -1));
-            Debug.Log($"Position (5,5) walkable: {walkable1}");
-            Debug.Log($"Position (-1,-1) walkable: {walkable2}");
-
-            // Тест 4: Путь с избеганием юнитов
-            var unitPositions = new Vector2Int[] { new Vector2Int(2, 2), new Vector2Int(3, 3) };
-            var path3 = _pathfindingService.FindPathAvoidingUnits(new Vector2Int(1, 1), new Vector2Int(4, 4), unitPositions);
-            Debug.Log($"Path avoiding units: {(path3 != null ? $"Found {path3.Length} points" : "No path")}");
-
-            Debug.Log("Pathfinding tests completed");
         }
 
-        [ContextMenu("Test Game Field")]
-        private void TestGameField()
+        [ContextMenu("Restart Game")]
+        private void RestartGame()
         {
-            Debug.Log("--- Testing Game Field Service ---");
+            LogHeader("RESTARTING GAME");
             
-            if (_gameFieldService == null)
-            {
-                Debug.LogError("GameFieldService not available!");
-                return;
-            }
-
-            // Тест 1: Генерация поля
-            _gameFieldService.GenerateField(15, 15);
-            var field = _gameFieldService.GetField();
-            Debug.Log($"Generated field: {field.width}x{field.height}");
-            Debug.Log($"Player 1 spawns: {field.player1Spawns.Length} positions");
-            Debug.Log($"Player 2 spawns: {field.player2Spawns.Length} positions");
-
-            // Тест 2: Проверка позиций
-            var validPos = _gameFieldService.IsValidPosition(new Vector2Int(5, 5));
-            var invalidPos = _gameFieldService.IsValidPosition(new Vector2Int(-1, -1));
-            Debug.Log($"Position (5,5) valid: {validPos}");
-            Debug.Log($"Position (-1,-1) valid: {invalidPos}");
-
-            // Тест 3: Препятствия
-            _gameFieldService.AddObstacle(new Vector2Int(7, 7));
-            var hasObstacle = _gameFieldService.IsObstacleAt(new Vector2Int(7, 7));
-            var noObstacle = _gameFieldService.IsObstacleAt(new Vector2Int(8, 8));
-            Debug.Log($"Obstacle at (7,7): {hasObstacle}");
-            Debug.Log($"Obstacle at (8,8): {noObstacle}");
-
-            // Тест 4: Поиск пути
-            var path = _gameFieldService.FindPath(new Vector2Int(1, 1), new Vector2Int(10, 10));
-            Debug.Log($"Path from (1,1) to (10,10): {(path != null ? $"Found {path.Length} points" : "No path")}");
-
-            // Тест 5: Line of Sight
-            var los1 = _gameFieldService.HasLineOfSight(new Vector2Int(1, 1), new Vector2Int(5, 5), 10);
-            var los2 = _gameFieldService.HasLineOfSight(new Vector2Int(1, 1), new Vector2Int(7, 7), 10); // Через препятствие
-            Debug.Log($"LOS (1,1) -> (5,5): {los1}");
-            Debug.Log($"LOS (1,1) -> (7,7) through obstacle: {los2}");
-
-            // Тест 6: Позиции спавна
-            var player1Spawns = _gameFieldService.GetSpawnPositions(PlayerId.Player1);
-            var player2Spawns = _gameFieldService.GetSpawnPositions(PlayerId.Player2);
-            Debug.Log($"Player 1 spawn positions: {string.Join(", ", player1Spawns)}");
-            Debug.Log($"Player 2 spawn positions: {string.Join(", ", player2Spawns)}");
-
-            // Тест 7: Статистика поля
-            _gameFieldService.PrintFieldStatistics();
-
-            Debug.Log("Game field tests completed");
+            CreateInitialUnits();
+            StartGame();
         }
+
+        #endregion
+
+        #region Методы логирования
+
+        private void LogHeader(string message)
+        {
+            Debug.Log($"<color=cyan>==================== {message} ====================</color>");
+        }
+
+        private void LogSection(string message)
+        {
+            Debug.Log($"<color=yellow>--- {message} ---</color>");
+        }
+
+        private void LogSuccess(string message)
+        {
+            Debug.Log($"<color=green>[SUCCESS] {message}</color>");
+        }
+
+        private void LogError(string message)
+        {
+            Debug.Log($"<color=red>[ERROR] {message}</color>");
+        }
+
+        private void LogInfo(string message)
+        {
+            Debug.Log($"<color=white>[INFO] {message}</color>");
+        }
+
+        #endregion
     }
 }
