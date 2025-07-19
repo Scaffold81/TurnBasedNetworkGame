@@ -61,16 +61,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Core\GameConfig.cs" />
+    <Compile Include="Assets\Scripts\Services\PATHFINDING_COMPILATION_FIX.cs" />
+    <Compile Include="Assets\Scripts\Core\Extensions.cs" />
+    <Compile Include="Assets\Scripts\Services\GameFieldService.cs" />
     <Compile Include="Assets\Scripts\Services\GameServices.cs" />
+    <Compile Include="Assets\Scripts\QUICK_SETUP_REFERENCE.cs" />
     <Compile Include="Assets\Scripts\Core\GameConstants.cs" />
     <Compile Include="Assets\Scripts\Core\DataStructures.cs" />
     <Compile Include="Assets\Scripts\ZENJECT_BINDINGS_REFERENCE.cs" />
     <Compile Include="Assets\Scripts\Services\AdvancedServices.cs" />
     <Compile Include="Assets\Scripts\COMPILATION_FIXES.cs" />
     <Compile Include="Assets\Scripts\Installers\GameInstaller.cs" />
+    <Compile Include="Assets\Scripts\Services\UnitService.cs" />
     <Compile Include="Assets\Scripts\GameInitializer.cs" />
     <Compile Include="Assets\Scripts\Services\GameEventsService.cs" />
     <Compile Include="Assets\Scripts\Core\AdvancedInterfaces.cs" />
+    <Compile Include="Assets\Scripts\Services\PathfindingService.cs" />
     <Compile Include="Assets\Scripts\Core\Interfaces.cs" />
     <Compile Include="Assets\Scripts\Core\Events.cs" />
     <Compile Include="Assets\Scripts\Services\NetworkGameService.cs" />

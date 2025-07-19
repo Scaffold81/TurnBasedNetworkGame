@@ -264,8 +264,8 @@
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\BindInfo\MemoryPoolBindInfo.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Finalizers\NullBindingFinalizer.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Install\MonoInstaller.cs" />
-    <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\SubContainerBinder.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Internal\LinqExtensions.cs" />
+    <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\SubContainerBinder.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Binding\Binders\Factory\FactoryFromBinder\FactoryFromBinder6.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Providers\SubContainerDependencyProvider.cs" />
     <Compile Include="Assets\Plugins\Zenject\Source\Install\Contexts\SceneDecoratorContext.cs" />

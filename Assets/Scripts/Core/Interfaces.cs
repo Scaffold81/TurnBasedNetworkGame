@@ -185,6 +185,15 @@ namespace TurnBasedGame.Core.Interfaces
         
         // Позиции спавна
         Vector2Int[] GetSpawnPositions(PlayerId playerId);
+        
+        // Управление препятствиями (для тестирования и отладки)
+        void AddObstacle(Vector2Int position);
+        void RemoveObstacle(Vector2Int position);
+        void ClearObstacles();
+        Vector2Int[] GetAllObstacles();
+        
+        // Отладка и статистика
+        void PrintFieldStatistics();
     }
 
     /// <summary>

@@ -86,7 +86,7 @@ namespace TurnBasedGame.Installers
             Container.Bind<INetworkGameService>().To<NetworkGameService>().FromNewComponentOnNewGameObject().AsSingle();
             
             // Игровая логика
-            Container.Bind<IUnitService>().To<UnitService>().AsSingle();
+            Container.Bind<IUnitService>().To<UnitService>().AsSingle().NonLazy(); // NonLazy для инициализации
             Container.Bind<ITurnService>().To<TurnService>().AsSingle();
             Container.Bind<IGameFieldService>().To<GameFieldService>().AsSingle();
             Container.Bind<IInputService>().To<InputService>().FromNewComponentOnNewGameObject().AsSingle();

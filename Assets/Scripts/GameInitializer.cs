@@ -37,6 +37,8 @@ namespace TurnBasedGame
         [Inject] private IUnitService _unitService;
         [Inject] private ITurnService _turnService;
         [Inject] private INetworkGameService _networkGame;
+        [Inject] private IGameFieldService _gameFieldService;
+        [Inject] private IPathfindingService _pathfindingService;
         [Inject] private GameConfig _gameConfig;
 
         private void Start()
@@ -68,6 +70,8 @@ namespace TurnBasedGame
             Debug.Log($"UnitService: {(_unitService != null ? "✓" : "✗")}");
             Debug.Log($"TurnService: {(_turnService != null ? "✓" : "✗")}");
             Debug.Log($"NetworkGameService: {(_networkGame != null ? "✓" : "✗")}");
+            Debug.Log($"GameFieldService: {(_gameFieldService != null ? "✓" : "✗")}");
+            Debug.Log($"PathfindingService: {(_pathfindingService != null ? "✓" : "✗")}");
             Debug.Log($"GameConfig: {(_gameConfig != null ? "✓" : "✗")}");
 
             if (_gameConfig != null)
@@ -152,10 +156,10 @@ namespace TurnBasedGame
             Debug.Log("Reactive events test completed");
         }
 
-        [ContextMenu("Test Unit Selection")]
-        private void TestUnitSelection()
+        [ContextMenu("Test Unit Selection Advanced")]
+        private void TestUnitSelectionAdvanced()
         {
-            Debug.Log("--- Testing Unit Selection ---");
+            Debug.Log("--- Testing Advanced Unit Selection ---");
             
             if (_unitService == null)
             {
@@ -163,10 +167,65 @@ namespace TurnBasedGame
                 return;
             }
 
-            // Тестируем выбор юнита
+            // Тест 1: Выбор юнита
+            Debug.Log("Test 1: Selecting unit...");
             _unitService.SelectUnit(1);
+            
+            var selectedUnit = _unitService.SelectedUnit.CurrentValue;
+            if (selectedUnit.HasValue)
+            {
+                Debug.Log($"Selected unit: {selectedUnit.Value.id}, type: {selectedUnit.Value.type}, owner: {selectedUnit.Value.owner}");
+            }
+            else
+            {
+                Debug.LogWarning("No unit selected!");
+            }
+
+            // Тест 2: Планирование движения
+            Debug.Log("Test 2: Planning movement...");
             _unitService.PlanMovement(new Vector2Int(5, 5));
-            _unitService.ExecuteMove(new Vector2Int(5, 5));
+            
+            var movementPath = _unitService.MovementPath.CurrentValue;
+            if (movementPath != null && movementPath.Length > 0)
+            {
+                Debug.Log($"Movement path planned: {movementPath.Length} steps");
+                Debug.Log($"Path: {string.Join(" -> ", movementPath)}");
+            }
+            else
+            {
+                Debug.LogWarning("No movement path planned!");
+            }
+
+            // Тест 3: Поиск целей для атаки
+            Debug.Log("Test 3: Finding attack targets...");
+            var attackTargets = _unitService.AttackTargets.CurrentValue;
+            if (attackTargets != null && attackTargets.Length > 0)
+            {
+                Debug.Log($"Attack targets found: {attackTargets.Length} targets");
+                Debug.Log($"Target IDs: {string.Join(", ", attackTargets)}");
+            }
+            else
+            {
+                Debug.Log("No attack targets available");
+            }
+
+            // Тест 4: Проверка возможностей
+            Debug.Log("Test 4: Checking unit capabilities...");
+            if (selectedUnit.HasValue)
+            {
+                var canMove = _unitService.CanUnitMove(selectedUnit.Value.id);
+                var canAttack = _unitService.CanUnitAttack(selectedUnit.Value.id);
+                Debug.Log($"Unit {selectedUnit.Value.id} can move: {canMove}, can attack: {canAttack}");
+            }
+
+            // Тест 5: Отмена выбора
+            Debug.Log("Test 5: Deselecting unit...");
+            _unitService.DeselectUnit();
+            
+            var deselectedUnit = _unitService.SelectedUnit.CurrentValue;
+            Debug.Log($"Unit deselected: {!deselectedUnit.HasValue}");
+
+            Debug.Log("Advanced unit selection tests completed");
         }
 
         [ContextMenu("Test Turn Management")]
@@ -215,6 +274,102 @@ namespace TurnBasedGame
             {
                 Debug.Log($"  Unit {unit.id}: {unit.type} owned by {unit.owner} at {unit.position}");
             }
+        }
+
+        [ContextMenu("Test Pathfinding")]
+        private void TestPathfinding()
+        {
+            Debug.Log("--- Testing Pathfinding Service ---");
+            
+            if (_pathfindingService == null)
+            {
+                Debug.LogError("PathfindingService not available!");
+                return;
+            }
+
+            // Тест 1: Простой путь
+            var path1 = _pathfindingService.FindPath(new Vector2Int(0, 0), new Vector2Int(5, 5));
+            Debug.Log($"Simple path (0,0) -> (5,5): {(path1 != null ? $"Found {path1.Length} points" : "No path")}");
+            
+            if (path1 != null)
+            {
+                Debug.Log($"Path length: {_pathfindingService.CalculatePathLength(path1)}");
+                Debug.Log($"Path valid: {_pathfindingService.IsPathValid(path1, 10)}");
+                
+                // Выводим путь
+                var pathStr = string.Join(" -> ", path1);
+                Debug.Log($"Path points: {pathStr}");
+            }
+
+            // Тест 2: Путь с ограничением дистанции
+            var path2 = _pathfindingService.FindPath(new Vector2Int(0, 0), new Vector2Int(10, 10), 5);
+            Debug.Log($"Limited path (0,0) -> (10,10) max 5: {(path2 != null ? $"Found {path2.Length} points" : "No path - too far")}");
+
+            // Тест 3: Проверка проходимости
+            var walkable1 = _pathfindingService.IsPositionWalkable(new Vector2Int(5, 5));
+            var walkable2 = _pathfindingService.IsPositionWalkable(new Vector2Int(-1, -1));
+            Debug.Log($"Position (5,5) walkable: {walkable1}");
+            Debug.Log($"Position (-1,-1) walkable: {walkable2}");
+
+            // Тест 4: Путь с избеганием юнитов
+            var unitPositions = new Vector2Int[] { new Vector2Int(2, 2), new Vector2Int(3, 3) };
+            var path3 = _pathfindingService.FindPathAvoidingUnits(new Vector2Int(1, 1), new Vector2Int(4, 4), unitPositions);
+            Debug.Log($"Path avoiding units: {(path3 != null ? $"Found {path3.Length} points" : "No path")}");
+
+            Debug.Log("Pathfinding tests completed");
+        }
+
+        [ContextMenu("Test Game Field")]
+        private void TestGameField()
+        {
+            Debug.Log("--- Testing Game Field Service ---");
+            
+            if (_gameFieldService == null)
+            {
+                Debug.LogError("GameFieldService not available!");
+                return;
+            }
+
+            // Тест 1: Генерация поля
+            _gameFieldService.GenerateField(15, 15);
+            var field = _gameFieldService.GetField();
+            Debug.Log($"Generated field: {field.width}x{field.height}");
+            Debug.Log($"Player 1 spawns: {field.player1Spawns.Length} positions");
+            Debug.Log($"Player 2 spawns: {field.player2Spawns.Length} positions");
+
+            // Тест 2: Проверка позиций
+            var validPos = _gameFieldService.IsValidPosition(new Vector2Int(5, 5));
+            var invalidPos = _gameFieldService.IsValidPosition(new Vector2Int(-1, -1));
+            Debug.Log($"Position (5,5) valid: {validPos}");
+            Debug.Log($"Position (-1,-1) valid: {invalidPos}");
+
+            // Тест 3: Препятствия
+            _gameFieldService.AddObstacle(new Vector2Int(7, 7));
+            var hasObstacle = _gameFieldService.IsObstacleAt(new Vector2Int(7, 7));
+            var noObstacle = _gameFieldService.IsObstacleAt(new Vector2Int(8, 8));
+            Debug.Log($"Obstacle at (7,7): {hasObstacle}");
+            Debug.Log($"Obstacle at (8,8): {noObstacle}");
+
+            // Тест 4: Поиск пути
+            var path = _gameFieldService.FindPath(new Vector2Int(1, 1), new Vector2Int(10, 10));
+            Debug.Log($"Path from (1,1) to (10,10): {(path != null ? $"Found {path.Length} points" : "No path")}");
+
+            // Тест 5: Line of Sight
+            var los1 = _gameFieldService.HasLineOfSight(new Vector2Int(1, 1), new Vector2Int(5, 5), 10);
+            var los2 = _gameFieldService.HasLineOfSight(new Vector2Int(1, 1), new Vector2Int(7, 7), 10); // Через препятствие
+            Debug.Log($"LOS (1,1) -> (5,5): {los1}");
+            Debug.Log($"LOS (1,1) -> (7,7) through obstacle: {los2}");
+
+            // Тест 6: Позиции спавна
+            var player1Spawns = _gameFieldService.GetSpawnPositions(PlayerId.Player1);
+            var player2Spawns = _gameFieldService.GetSpawnPositions(PlayerId.Player2);
+            Debug.Log($"Player 1 spawn positions: {string.Join(", ", player1Spawns)}");
+            Debug.Log($"Player 2 spawn positions: {string.Join(", ", player2Spawns)}");
+
+            // Тест 7: Статистика поля
+            _gameFieldService.PrintFieldStatistics();
+
+            Debug.Log("Game field tests completed");
         }
     }
 }
